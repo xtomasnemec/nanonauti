@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Operace Nanonaut</title>
+    </head>
+    <body>
+        <script>
+            //KONSTANTY
+            var CANVAS_WIDTH = 800;
+            var CANVAS_HEIGHT = 600;
+            var NANONAUT_WIDTH = 181;    
+            var NANONAUT_HEIGHT = 229;
+            var ZEME_Y = 540;
+            var NANONAUT_Y_ZRYCHLENI = 1;
+            var MEZERNIK_KOD = 32;
+            var NANONAUT_SKOK_RYCHLOST = 20;
+
+            //nastavení
+            var nanonautImage = new Image();
+            nanonautImage.src = 'nanonaut.png';
+
+            var pozadiImage = new Image();
+            pozadiImage.src = 'background.png';
+
+            var nanonautX = 50;
+            var nanonautY = 40;
+            
+            var nanonautYRychlost = 0;
+            var mezernikStisknuty = false;
+
+
+            //inicializace
+            var canvas = document.createElement('canvas');
+            var c = canvas.getContext('2d');
+            canvas.width = CANVAS_WIDTH;
+            canvas.height = CANVAS_HEIGHT;
+            document.body.appendChild(canvas);
+
+            //udalosti
+            window.addEventListener('keydown', onkeyDown);
+            window.addEventListener("keyup", onKeyUp);
+            window.addEventListener('load', start);
+
+
+            //funkce
+            function start() {
+                window.requestAnimationFrame(mainloop);
+            }
+
+            function onkeyDown(event) { 
+                if (event.keyCode === MEZERNIK_KOD) {
+                    mezernikStisknuty = true;
+                }
+            }
+
+            function onKeyUp (event) {
+                if (event.keyCode === MEZERNIK_KOD) {
+                    mezernikStisknuty = false;
+                }
+            }
+            
+            
+
+
+           //hlavní smyčka
+            function mainloop() {
+                update();
+                draw();
+                window.requestAnimationFrame(mainloop);
+            }
+            
+            //reakce hráče
+            
+            //aktualizace
+           function update() {
+             if (mezernikStisknuty) {
+                nanonautYRychlost = -NANONAUT_SKOK_RYCHLOST;
+             } 
+               // Aktualizace Nanonauta.
+               nanonautY = nanonautY + nanonautYRychlost;
+               nanonautYRychlost = nanonautYRychlost + NANONAUT_Y_ZRYCHLENI;
+               if (nanonautY > (ZEME_Y - NANONAUT_HEIGHT)) {
+                 nanonautY = ZEME_Y - NANONAUT_HEIGHT;
+                 nanonautYRychlost = 0;
+               }
+            } 
+            
+            //zobrazení
+            function draw() {
+                //Zobrazení oblohy
+                c.fillStyle = 'LightSkyBlue';
+                c.fillRect(0, 0, CANVAS_WIDTH, ZEME_Y - 40);
+
+                //Zobrazení pozadí
+                c.drawImage(pozadiImage, 0, -210);
+
+                //Zobrazení země
+                c.fillStyle = 'ForestGreen';
+                c.fillRect(0, ZEME_Y - 40, CANVAS_WIDTH, CANVAS_HEIGHT - ZEME_Y + 40);
+               
+                // Zobrazení nanonauta.
+                c.drawImage(nanonautImage, nanonautX, nanonautY);
+           }
+
+           
+        </script>
+    </body>
+</html>
